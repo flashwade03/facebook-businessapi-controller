@@ -8,8 +8,6 @@ class API:
 
     api = None
     object_queue = None
-    successevent_queue = None
-    failevent_queue = None
 
     batch = None
 
