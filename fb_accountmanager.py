@@ -2,6 +2,7 @@ import sys, os, json
 from facebook_business import FacebookSession
 from facebook_business.api import FacebookAdsApi
 from facebook_business.adobjects.adaccount import AdAccount
+from fb_api import *
 
 class FacebookAccountManager :
    
@@ -17,7 +18,7 @@ class FacebookAccountManager :
         print 'finished load fb_account.json key file\n'
 
     def get_key_data(self):
-        print str(self.keydata)
+        #print str(self.keydata)
         return self.keydata
  
     
@@ -27,14 +28,9 @@ class FacebookAccountManager :
             return self.apis[appname]
         else:
             for key in self.keydata:
-                if key['appname'] == appname:
-                    if key['appsecret'] != None and key['access_token'] != None and key['accountid'] != None and key['client_id'] != None:
-                        session = FacebookSession(
-                            key['client_id'],
-                            key['appsecret'],
-                            key['access_token']
-                        )
-                        api = FacebookAdsApi(session)
+                if key['app_name'] == appname:
+                    if key['business_key']['app_secret'] != None and key['business_key']['user_access_token'] != None and key['business_key']['account_id'] != None and key['business_key']['app_id'] != None:
+                        api = API(key['business_key']['app_id'], key['business_key']['app_secret'], key['business_key']['user_access_token']) 
                         self.apis[appname] = api
                         return api
                     else :
@@ -64,10 +60,10 @@ class FacebookAccountManager :
         
         accountid = None
         for key in self.keydata:
-            if key['appname'] == appname:
-                accountid = key['accountid']
+            if key['app_name'] == appname:
+                accountid = key['business_key']['account_id']
 
-        account = AdAccount(fbid = 'act_'+accountid, api = target_api)
+        account = AdAccount(fbid = 'act_'+accountid, api = target_api.api)
         self.adaccounts[appname] = account
         print account
         return account
